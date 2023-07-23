@@ -4,13 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONUtil;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -90,7 +88,40 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         reader.close();
         in.close();
         Map<String, Object> map = JSONUtil.parseObj(body.toString());
-        Map<>
+        Map<String, Object> result = new LinkedHashMap<>();
+        for(String key:map.keySet()){
+            Object val = map.get(key);
+            if(val instanceof String){
+                if(!StrUtil.hasEmpty(val.toString())){
+                    result.put(key,HtmlUtil.cleanHtmlTag(val.toString()));
+                }
+            }else{
+                result.put(key, val);
+            }
+        }
+        String json = JSONUtil.toJsonStr(result);
+        ByteArrayInputStream bain = new ByteArrayInputStream(json.getBytes());
+        return new ServletInputStream() {
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+
+            }
+
+            @Override
+            public int read() throws IOException {
+                return bain.read();
+            }
+        };
 
     }
 }
