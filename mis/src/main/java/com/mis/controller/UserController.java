@@ -34,12 +34,12 @@ public class UserController {
     /**
      * 生成登陆二维码的字符串
      */
-    @GetMapping("/createQrCode")
-    @Operation(summary = "生成二维码Base64格式的字符串")
-    public ResponseCodeMap createQrCode() {
-        HashMap map = userService.createQrCode();
-        return ResponseCodeMap.ok(map);
-    }
+//    @GetMapping("/createQrCode")
+//    @Operation(summary = "生成二维码Base64格式的字符串")
+//    public ResponseCodeMap createQrCode() {
+//        HashMap map = userService.createQrCode();
+//        return ResponseCodeMap.ok(map);
+//    }
 
     /**
      * 登陆成功后加载用户的基本信息
