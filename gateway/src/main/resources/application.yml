@@ -1,0 +1,85 @@
+server:
+  jetty:
+    threads:
+      acceptors: 4
+      selectors: 8
+  port: 8201
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    inetutils:
+      preferred-networks: 127.0.0.1
+    nacos:
+      #????
+      config:
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        server-addr: 101.33.247.199:8848
+        prefix: ${spring.application.name}
+        namespace: drivemate
+      discovery:
+        namespace: drivemate
+        username: nacos
+        password: nacos
+        server-addr: 101.33.247.199:8848
+        heart-beat-interval: 1000
+        heart-beat-timeout: 1000
+        group: DEFAULT_GROUP
+    sentinel:
+      transport:
+        dashboard: 101.33.247.199:8718
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors: # ???????
+        add-to-simple-url-handler-mapping: true # ??options???????
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: # ???????????
+              - "http://localhost:3000"
+              - "http://127.0.0.1:3000"
+              - "http://192.168.99.106:3000"
+            allowedMethods: # ?????ajax?????
+              - "GET"
+              - "POST"
+              - "DELETE"
+              - "PUT"
+              - "OPTIONS"
+            allowedHeaders: "*" # ????????????
+            allowCredentials: true # ??????cookie
+            maxAge: 360000 # ??????????
+      routes:
+        - id: bff_driver
+          uri: lb://bff_driver
+          predicates:
+            - Path=/driver/**
+          filters:
+            - StripPrefix=1
+        - id: mis
+          uri: lb://mis
+          predicates:
+            - Path=/mis/**
+          filters:
+            - StripPrefix=1
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  # ??????????
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 
-1
+
 @Component
 public class MyWXPayConfig extends WXPayConfig {
     @Value("${wx.app-id}")

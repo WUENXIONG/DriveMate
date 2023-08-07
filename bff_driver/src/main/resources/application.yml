@@ -1,0 +1,88 @@
+server:
+  jetty:
+    threads:
+      acceptors: 4
+      selectors: 8
+  port: 8101
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    #??application-common.yml??
+    include: common
+  application:
+    name: bff_driver
+  redis:
+    database: 3
+    host: 101.33.247.199
+    port: 6379
+    password: abc123456
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 16
+        min-idle: 8
+  cloud:
+    inetutils:
+      #??????Nacos??IP??
+      preferred-networks: 127.0.0.1
+    nacos:
+      #??????Web??????????
+      config:
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        server-addr: 101.33.247.199:8848
+        prefix: ${spring.application.name}
+        namespace: drivemate
+      #??????Nacos??????
+      discovery:
+        namespace: drivemate
+        username: nacos
+        password: nacos
+        server-addr: 101.33.247.199:8848
+        heart-beat-interval: 1000
+        heart-beat-timeout: 1000
+        group: DEFAULT_GROUP
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+sa-token:
+  # HTTP????token???
+  token-name: token
+  # token??????s ??30?, -1??????
+  timeout: 864000
+  # token????? (???????????token??) ??: ?
+  activity-timeout: -1
+  # ???????????? (?true???????, ?false?????????)
+  allow-concurrent-login: true
+  # ?????????????????token (?true?????????token, ?false?????????token)
+  is-share: false
+  # token??
+  token-style: uuid
+  #??Cookie?Token
+  isReadCookie: false
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /doc-api.html
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: on
+
+tx-lcn:
+  client:
+    #??TM??
+    manager-address: 127.0.0.1:8070
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 300000
