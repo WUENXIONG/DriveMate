@@ -14,7 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableFeignClients
 @ServletComponentScan
 @MapperScan("com.driver.db.dao")
-@ComponentScan("com.driver.*")
+@ComponentScan("com.common.*")
+@ComponentScan("com.driver.controller.*")
 @EnableDistributedTransaction
 public class DriverApplication {
 

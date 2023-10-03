@@ -5,10 +5,10 @@ import com.driver.db.pojo.DriverSettingsEntity;
 import java.util.Map;
 
 /**
- * @Entity com.example.hxdsdr.db.pojo.DriverSettingsEntity
+ * @Entity com.driver.db.pojo.DriverSettingsEntity
  */
 public interface DriverSettingsDao {
-
+    public int insertDriverSettings(DriverSettingsEntity entity);
 }
 
 

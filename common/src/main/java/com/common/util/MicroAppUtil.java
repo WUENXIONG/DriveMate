@@ -1,12 +1,16 @@
-package com.common.wx;
+package com.common.util;
+
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.common.exception.DriveMateException;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
+
 
 @Component("MicroAppUtil")
 public class MicroAppUtil {
@@ -49,4 +53,5 @@ public class MicroAppUtil {
             throw new DriveMateException(json.getStr("errmsg"));
         }
     }
+
 }

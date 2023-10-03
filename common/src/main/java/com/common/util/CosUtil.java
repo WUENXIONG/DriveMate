@@ -3,7 +3,6 @@ package com.common.util;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.common.exception.DriveMateException;
-
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -20,10 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.security.PrivilegedExceptionAction;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class CosUtil {
+
     @Value("${tencent.cloud.appId}")
     private String appId;
 
@@ -45,7 +48,6 @@ public class CosUtil {
     @Value("${tencent.cloud.bucket-private}")
     private String bucketPrivate;
 
-    //获取访问公有存储桶的连接
     private COSClient getCosPublicClient() {
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         ClientConfig clientConfig = new ClientConfig(new Region(regionPublic));
@@ -54,7 +56,6 @@ public class CosUtil {
         return cosClient;
     }
 
-    //获得访问私有存储桶的连接
     private COSClient getCosPrivateClient() {
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         ClientConfig clientConfig = new ClientConfig(new Region(regionPrivate));
@@ -63,9 +64,6 @@ public class CosUtil {
         return cosClient;
     }
 
-    /**
-     * 向公有存储桶上传文件
-     */
     public HashMap uploadPublicFile(MultipartFile file, String path) throws IOException {
         String fileName = file.getOriginalFilename(); //上传文件的名字
         String fileType = fileName.substring(fileName.lastIndexOf(".")); //文件后缀名
@@ -99,6 +97,7 @@ public class CosUtil {
 
             if (!response.getPornInfo().getHitFlag().equals("0")
                     || !response.getTerroristInfo().getHitFlag().equals("0")
+                    || !response.getPoliticsInfo().getHitFlag().equals("0")
                     || !response.getAdsInfo().getHitFlag().equals("0")
             ) {
                 //删除违规图片
@@ -110,9 +109,6 @@ public class CosUtil {
         return map;
     }
 
-    /**
-     * 向私有存储桶上传文件
-     */
     public HashMap uploadPrivateFile(MultipartFile file, String path) throws IOException {
         String fileName = file.getOriginalFilename(); //上传文件的名字
         String fileType = fileName.substring(fileName.lastIndexOf(".")); //文件后缀名
@@ -157,9 +153,6 @@ public class CosUtil {
 
     }
 
-    /**
-     * 获取私有读写文件的临时URL外网访问地址
-     */
     public String getPrivateFileUrl(String path) {
         COSClient client = getCosPrivateClient();
         GeneratePresignedUrlRequest request =
@@ -171,9 +164,6 @@ public class CosUtil {
         return url.toString();
     }
 
-    /**
-     * 刪除公有存储桶的文件
-     */
     public void deletePublicFile(String[] pathes) {
         COSClient client = getCosPublicClient();
         for (String path : pathes) {
@@ -182,9 +172,6 @@ public class CosUtil {
         client.shutdown();
     }
 
-    /**
-     * 刪除私有存储桶的文件
-     */
     public void deletePrivateFile(String[] pathes) {
         COSClient client = getCosPrivateClient();
         for (String path : pathes) {

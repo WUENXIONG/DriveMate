@@ -9,14 +9,13 @@ server:
 
 spring:
   profiles:
-    #??application-common.yml??
     include: common
   application:
     name: driver
   cloud:
     inetutils:
       #??????Nacos??IP??
-      preferred-networks: 127.0.0.1
+      preferred-networks: 101.33.247.199
     nacos:
       #??????Web??????????
       config:

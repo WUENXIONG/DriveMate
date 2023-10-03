@@ -12,7 +12,7 @@ spring:
     name: gateway
   cloud:
     inetutils:
-      preferred-networks: 127.0.0.1
+      preferred-networks: 101.33.247.199
     nacos:
       #????
       config:
@@ -31,31 +31,31 @@ spring:
         group: DEFAULT_GROUP
     sentinel:
       transport:
-        dashboard: 101.33.247.199:8718
+        dashboard: 101.33.247.199:8719
     gateway:
       discovery:
         locator:
-          enabled: true
-      globalcors: # ???????
-        add-to-simple-url-handler-mapping: true # ??options???????
+          enabled: false
+      globalcors: # 全局的跨域处理
+        add-to-simple-url-handler-mapping: true # 解决options请求被拦截问题
         corsConfigurations:
           '[/**]':
-            allowedOrigins: # ???????????
+            allowedOrigins: # 允许的跨域ip
               - "http://localhost:3000"
               - "http://127.0.0.1:3000"
-              - "http://192.168.99.106:3000"
-            allowedMethods: # ?????ajax?????
+              - "http://172.29.194.239:3000"
+            allowedMethods: # 允许的跨域ajax的请求方式
               - "GET"
               - "POST"
               - "DELETE"
               - "PUT"
               - "OPTIONS"
-            allowedHeaders: "*" # ????????????
-            allowCredentials: true # ??????cookie
-            maxAge: 360000 # ??????????
+            allowedHeaders: "*" # 允许在请求中携带的头信息
+            allowCredentials: true # 是否允许携带cookie
+            maxAge: 360000 # 本次跨域检测的有效期
       routes:
         - id: bff_driver
-          uri: lb://bff_driver
+          uri: lb://bff-driver
           predicates:
             - Path=/driver/**
           filters:

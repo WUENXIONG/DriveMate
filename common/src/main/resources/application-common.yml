@@ -2,23 +2,26 @@ spring:
   profiles: common
 
 tencent:
-  cloud:
-    appId: 腾讯云APPID
-    secretId: 腾讯云SecretId
-    secretKey: 腾讯云SecretKey
-    region-public: 公有存储桶所在地域
-    bucket-public: 公有存储桶名称
-    region-private: 私有存储桶所在地域
-    bucket-private: 私有存储桶名称
+    cloud:
+        appId: "1318932019"
+        secretId: "AKIDRmwlPr43rTsqeGfrpcDZkmgPuENMq9HD"
+        secretKey: "nPr8B1e6MSM1WWl4Mapx20ueIk16xZAY"
+        region-public: "ap-guangzhou"
+        bucket-public: "dm-public-1318932019"
+        region-private: 'ap-guangzhou'
+        bucket-private: 'dm-private-1318932019'
+        face:
+          groupName: DriveMate
+          region: ap-guangzhou
 
 wx:
-  app-id: 你的微信小程序APPID
-  app-secret: 你的微信小程序密钥
-  mch-id: 商户号（课程QQ群共享文件中获取）
-  key: 商户密钥（课程QQ群共享文件中获取）
-  cert-path: 商户数字证书文件路径（课程QQ群共享文件中获取）
+    app-id: "wx91c8f3579efcb95b"
+    app-secret: "42808f2cb1dcc718f36ff4f5b11f0054"
+    mch-id: "1526972031"
+    key: "qv9Kihy5TOJxGySzFO8pd4wCMg3tn6YK"
+    cert-path: "C:/Users/32125/Desktop/apiclient_cert.p12"
 
 minio:
-  endpoint: http://你本地电脑或者云主机IP:9000
-  access-key: root
-  secret-key: abc123456
+    endpoint: "http://101.33.247.199:9000"
+    access-key: "root"
+    secret-key: "abc123456"

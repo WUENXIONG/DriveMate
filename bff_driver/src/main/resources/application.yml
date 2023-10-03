@@ -12,7 +12,7 @@ spring:
     #??application-common.yml??
     include: common
   application:
-    name: bff_driver
+    name: bff-driver
   redis:
     database: 3
     host: 101.33.247.199
@@ -27,7 +27,7 @@ spring:
   cloud:
     inetutils:
       #??????Nacos??IP??
-      preferred-networks: 127.0.0.1
+      preferred-networks: 101.33.247.199
     nacos:
       #??????Web??????????
       config:

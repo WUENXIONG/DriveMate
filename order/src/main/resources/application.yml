@@ -16,13 +16,13 @@ spring:
   cloud:
     inetutils:
       #??????Nacos??IP??
-      preferred-networks: 127.0.0.1
+      preferred-networks: 101.33.247.199
     nacos:
       #??????Web??????????
       config:
         group: DEFAULT_GROUP
         file-extension: yaml
-        server-addr: 127.0.0.1:8848
+        server-addr: 101.33.247.199:8848
         prefix: ${spring.application.name}
         namespace: drivemate
       #??????Nacos??????

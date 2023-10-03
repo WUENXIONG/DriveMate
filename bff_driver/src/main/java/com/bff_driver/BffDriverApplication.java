@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 @EnableFeignClients
 @ComponentScan("com.bff_driver.*")
+@ComponentScan("com.common.*")
 @EnableDistributedTransaction
 public class BffDriverApplication {
 
