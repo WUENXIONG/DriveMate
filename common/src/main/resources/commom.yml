@@ -1,0 +1,27 @@
+spring:
+  profiles: common
+
+tencent:
+  cloud:
+    appId: ""
+    secretId: ""
+    secretKey: ""
+    region-public: ""
+    bucket-public: ""
+    region-private: ''
+    bucket-private: ''
+    face:
+      groupName: DriveMate
+      region:
+
+wx:
+  app-id: ""
+  app-secret: ""
+  mch-id: ""
+  key: ""
+  cert-path: ""
+
+minio:
+  endpoint: ""
+  access-key: ""
+  secret-key: ""
