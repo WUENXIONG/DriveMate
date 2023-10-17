@@ -1,8 +1,13 @@
 package com.common.util;
 
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+@Data
 public class DataPagingDef implements Serializable {
     private static final long serialVersionUID = 1l;
 

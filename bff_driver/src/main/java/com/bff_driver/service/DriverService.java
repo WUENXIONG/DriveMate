@@ -1,9 +1,6 @@
 package com.bff_driver.service;
 
-import com.bff_driver.controller.form.CreateDriverFaceModelForm;
-import com.bff_driver.controller.form.LoginForm;
-import com.bff_driver.controller.form.RegisterNewDriverForm;
-import com.bff_driver.controller.form.UpdateDriverAuthForm;
+import com.bff_driver.controller.form.*;
 
 import java.util.HashMap;
 
@@ -16,5 +13,11 @@ public interface DriverService {
     public String createDriverFaceModel(CreateDriverFaceModelForm form);
 
     public HashMap login(LoginForm form);
+
+    public HashMap searchDriverBaseInfo(SearchDriverBaseInfoForm form);
+
+    public HashMap searchWorkbenchData(long driverId);
+
+    public HashMap searchDriverAuth(SearchDriverAuthForm form);
 
 }

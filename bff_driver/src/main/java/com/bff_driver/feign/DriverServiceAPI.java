@@ -1,9 +1,6 @@
 package com.bff_driver.feign;
 
-import com.bff_driver.controller.form.CreateDriverFaceModelForm;
-import com.bff_driver.controller.form.LoginForm;
-import com.bff_driver.controller.form.RegisterNewDriverForm;
-import com.bff_driver.controller.form.UpdateDriverAuthForm;
+import com.bff_driver.controller.form.*;
 import com.common.util.ResponseCodeMap;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +18,15 @@ public interface DriverServiceAPI {
 
     @PostMapping("/driver/login")
     public ResponseCodeMap login(LoginForm form);
+
+    @PostMapping("/driver/searchDriverBaseInfo")
+    public ResponseCodeMap searchDriverBaseInfo(SearchDriverBaseInfoForm form);
+
+    @PostMapping("/settings/searchDriverSettings")
+    public ResponseCodeMap searchDriverSettings(SearchDriverSettingsForm form);
+
+    @PostMapping("/driver/searchDriverAuth")
+    public ResponseCodeMap searchDriverAuth(SearchDriverAuthForm form);
 
 
 }

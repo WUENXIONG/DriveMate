@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class CreateDriverFaceModelForm {
 
     @Schema(description = "司机ID")
-    private long driverId;
+    private Long driverId;
 
     @NotBlank(message = "photo不能为空")
     @Schema(description = "司机面部照片Base64字符串")

@@ -77,7 +77,7 @@ public class UserController {
         ResponseCodeMap r = ResponseCodeMap.ok().put("result", userId != null ? true : false);
         if (userId != null) {
             StpUtil.setLoginId(userId);
-//            StpUtil.login(userId);
+            StpUtil.login(userId);
             Set<String> permissions = userService.searchUserPermissions(userId);
             String token = StpUtil.getTokenInfo().getTokenValue();
             r.put("permissions", permissions).put("token", token);

@@ -19,6 +19,18 @@ public interface DriverDao {
     public int updateDriverArchive(long driverId);
 
     public HashMap login(String openId);
+
+    public HashMap searchDriverBaseInfo(long driverId);
+
+    public ArrayList<HashMap> searchDriverByPage(Map param);
+
+    public long searchDriverCount(Map param);
+
+    public HashMap searchDriverAuth(long driverId);
+
+    public HashMap searchDriverRealSummary(long driverId);
+
+    public int updateDriverRealAuth(Map param);
 }
 
 

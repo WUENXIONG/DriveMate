@@ -3,8 +3,10 @@ package com.driver.service.impl;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.common.exception.DriveMateException;
+import com.common.util.DataPagingDef;
 import com.common.util.MicroAppUtil;
 import com.driver.db.dao.DriverDao;
 import com.driver.db.dao.DriverSettingsDao;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,5 +159,51 @@ public class DriverServiceImpl implements DriverService {
         return result;
     }
 
+
+    @Override
+    public HashMap searchDriverBaseInfo(long driverId) {
+        HashMap result = driverDao.searchDriverBaseInfo(driverId);
+        JSONObject summary = JSONUtil.parseObj(MapUtil.getStr(result, "summary"));
+        result.replace("summary", summary);
+        return result;
+    }
+
+    @Override
+    public DataPagingDef searchDriverByPage(Map param) {
+        long count = driverDao.searchDriverCount(param);
+        ArrayList<HashMap> list = null;
+        if (count == 0) {
+            list = new ArrayList<>();
+        } else {
+            list = driverDao.searchDriverByPage(param);
+        }
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+
+
+        DataPagingDef dataPagingDef = new DataPagingDef(list, count, start, length);
+        return dataPagingDef;
+
+    }
+
+    @Override
+    public HashMap searchDriverAuth(long id) {
+        HashMap result = driverDao.searchDriverAuth(id);
+        return result;
+    }
+
+    @Override
+    public HashMap searchDriverRealSummary(long driverId) {
+        HashMap map = driverDao.searchDriverRealSummary(driverId);
+        return map;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int updateDriverRealAuth(Map param) {
+        int rows = driverDao.updateDriverRealAuth(param);
+        return rows;
+    }
 
 }

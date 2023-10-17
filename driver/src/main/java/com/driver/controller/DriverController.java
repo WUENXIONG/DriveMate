@@ -1,11 +1,9 @@
 package com.driver.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.common.util.DataPagingDef;
 import com.common.util.ResponseCodeMap;
-import com.driver.controller.form.CreateDriverFaceModelForm;
-import com.driver.controller.form.LoginForm;
-import com.driver.controller.form.RegisterNewDriverForm;
-import com.driver.controller.form.UpdateDriverAuthForm;
+import com.driver.controller.form.*;
 import com.driver.service.DriverService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,5 +51,45 @@ public class DriverController {
         return ResponseCodeMap.ok().put("result", map);
     }
 
+    @PostMapping("/searchDriverBaseInfo")
+    @Operation(summary = "查询司机基本信息")
+    public ResponseCodeMap searchDriverBaseInfo(@RequestBody @Valid SearchDriverBaseInfoForm form) {
+        HashMap result = driverService.searchDriverBaseInfo(form.getDriverId());
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
+    @PostMapping("/searchDriverByPage")
+    @Operation(summary = "查询司机分页记录")
+    public ResponseCodeMap searchDriverByPage(@RequestBody @Valid SearchDriverByPageForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        int page = form.getPage();
+        int length = form.getLength();
+        int start = (page - 1) * length;
+        param.put("start", start);
+        DataPagingDef dataPagingDef = driverService.searchDriverByPage(param);
+        return ResponseCodeMap.ok().put("result", dataPagingDef);
+    }
+
+    @PostMapping("/searchDriverAuth")
+    @Operation(summary = "查询司机认证信息")
+    public ResponseCodeMap searchDriverAuth(@RequestBody @Valid SearchDriverAuthForm form) {
+        HashMap result = driverService.searchDriverAuth(form.getDriverId());
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
+    @PostMapping("/searchDriverRealSummary")
+    @Operation(summary = "查询司机实名信息摘要")
+    public ResponseCodeMap searchDriverRealSummary(@RequestBody @Valid SearchDriverRealSummaryForm form) {
+        HashMap map = driverService.searchDriverRealSummary(form.getDriverId());
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/updateDriverRealAuth")
+    @Operation(summary = "更新司机实名认证状态")
+    public ResponseCodeMap updateDriverRealAuth(@RequestBody @Valid UpdateDriverRealAuthForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        int rows = driverService.updateDriverRealAuth(param);
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
 
 }

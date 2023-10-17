@@ -22,12 +22,11 @@ public class StpInterfaceImpl implements StpInterface {
     private UserDao userDao;
     //返回用户权限集合
     @Override
-    public List<String> getPermissionList(Object o, String s) {
+    public List<String> getPermissionList(Object loginId, String loginKey) {
         int userId = Integer.parseInt(loginId.toString());
 
         Set<String> permissions = userDao.searchUserPermissions(userId);
-        ArrayList list = new ArrayList();
-        list.add(permissions);
+        ArrayList list = new ArrayList(permissions);
         return list;
     }
 

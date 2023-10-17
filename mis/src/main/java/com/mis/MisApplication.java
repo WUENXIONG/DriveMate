@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ServletComponentScan
 @MapperScan("com.mis.db.dao")
 @ComponentScan("com.mis.*")
+@ComponentScan("com.common.*")
 @EnableDistributedTransaction
 public class MisApplication {
 
