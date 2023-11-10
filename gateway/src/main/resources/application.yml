@@ -44,6 +44,7 @@ spring:
               - "http://localhost:3000"
               - "http://127.0.0.1:3000"
               - "http://172.29.194.239:3000"
+              -
             allowedMethods: # 允许的跨域ajax的请求方式
               - "GET"
               - "POST"
@@ -64,6 +65,12 @@ spring:
           uri: lb://mis
           predicates:
             - Path=/mis/**
+          filters:
+            - StripPrefix=1
+        - id: bff_customer
+          uri: lb://bff-customer
+          predicates:
+            - Path=/customer/**
           filters:
             - StripPrefix=1
   servlet:

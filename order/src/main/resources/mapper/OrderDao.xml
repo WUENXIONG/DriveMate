@@ -13,4 +13,75 @@
           AND date = CURRENT_DATE
     </select>
 
+    <insert id="insert" parameterType="com.order.db.pojo.OrderEntity">
+        INSERT INTO tb_order
+        SET uuid = #{uuid},
+            customer_id = #{customerId},
+            start_place = #{startPlace},
+            start_place_location = #{startPlaceLocation},
+            end_place = #{endPlace},
+            end_place_location = #{endPlaceLocation},
+            expects_mileage = #{expectsMileage},
+            expects_fee = #{expectsFee},
+            favour_fee = #{favourFee},
+            charge_rule_id=#{chargeRuleId},
+            car_plate=#{carPlate},
+            car_type=#{carType},
+            date = #{date}
+    </insert>
+
+    <select id="searchOrderIdByUUID" parameterType="String" resultType="String">
+        SELECT CAST(id AS CHAR) AS id
+        FROM tb_order
+        WHERE uuid = #{uuid}
+    </select>
+
+    <update id="acceptNewOrder" parameterType="Map">
+        UPDATE tb_order
+        SET driver_id   = #{driverId},
+            accept_time = NOW(),
+            `status`=2
+        WHERE id = #{orderId}
+    </update>
+
+    <select id="searchDriverExecuteOrder" parameterType="Map" resultType="HashMap">
+        SELECT CAST(id AS CHAR) AS id,
+               customer_id AS customerId,
+               start_place AS startPlace,
+               start_place_location AS startPlaceLocation,
+               end_place AS endPlace,
+               end_place_location AS endPlaceLocation,
+               CAST(favour_fee AS CHAR) AS favourFee,
+               car_plate AS carPlate,
+               car_type AS carType,
+               DATE_FORMAT(create_time, '%Y-%m-%d %H:%i:%s') AS createTime
+        FROM tb_order
+        WHERE id = #{orderId}
+          AND driver_id = #{driverId}
+    </select>
+
+    <select id="searchOrderStatus" parameterType="Map" resultType="Integer">
+        SELECT status
+        FROM tb_order
+        WHERE id = #{orderId}
+        <if test="driverId!=null">
+            AND driver_id = #{driverId}
+        </if>
+        <if test="customerId!=null">
+            AND customer_id = #{customerId}
+        </if>
+    </select>
+
+    <delete id="deleteUnAcceptOrder" parameterType="Map">
+        DELETE FROM tb_order
+        WHERE id = #{orderId}
+        <if test="driverId!=null">
+            AND driver_id = #{driverId}
+        </if>
+        <if test="customerId!=null">
+            AND customer_id = #{customerId}
+        </if>
+    </delete>
+
+
 </mapper>

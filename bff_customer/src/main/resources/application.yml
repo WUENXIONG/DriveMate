@@ -12,7 +12,7 @@ spring:
     #??application-common.yml??
     include: common
   application:
-    name: bff_customer
+    name: bff-customer
   redis:
     database: 4
     host: 101.33.247.199

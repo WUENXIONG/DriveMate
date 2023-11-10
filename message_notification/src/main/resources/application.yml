@@ -9,10 +9,9 @@ server:
 
 spring:
   profiles:
-    #??application-common.yml??
     include: common
   application:
-    name: message_notification
+    name: message-notification
   cloud:
     inetutils:
       #??????Nacos??IP??

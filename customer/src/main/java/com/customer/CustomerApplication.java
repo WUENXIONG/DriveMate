@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ServletComponentScan
 @MapperScan("com.customer.db.dao")
 @ComponentScan("com.customer.*")
+@ComponentScan("com.common.*")
 @EnableDistributedTransaction
 public class CustomerApplication {
 
