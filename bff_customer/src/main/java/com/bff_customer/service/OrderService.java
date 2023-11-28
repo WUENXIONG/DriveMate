@@ -1,8 +1,6 @@
 package com.bff_customer.service;
 
-import com.bff_customer.controller.form.CreateNewOrderForm;
-import com.bff_customer.controller.form.DeleteUnAcceptOrderForm;
-import com.bff_customer.controller.form.SearchOrderStatusForm;
+import com.bff_customer.controller.form.*;
 
 import java.util.HashMap;
 
@@ -13,4 +11,9 @@ public interface OrderService {
 
     public String deleteUnAcceptOrder(DeleteUnAcceptOrderForm form);
 
+    public HashMap searchOrderForMoveById(SearchOrderForMoveByIdForm form);
+
+    public HashMap hasCustomerCurrentOrder(HasCustomerCurrentOrderForm form);
+
+    public boolean confirmArriveStartPlace(ConfirmArriveStartPlaceForm form);
 }

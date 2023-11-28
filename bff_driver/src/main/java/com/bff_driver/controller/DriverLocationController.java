@@ -2,6 +2,7 @@ package com.bff_driver.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import com.bff_driver.controller.form.UpdateOrderLocationCacheForm;
 import com.bff_driver.service.DriverLocationService;
 import com.common.util.ResponseCodeMap;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,13 @@ public class DriverLocationController {
         return ResponseCodeMap.ok();
     }
 
+    @PostMapping("/updateOrderLocationCache")
+    @Operation(summary = "更新订单定位缓存")
+    @SaCheckLogin
+    public ResponseCodeMap updateOrderLocationCache(@RequestBody @Valid UpdateOrderLocationCacheForm form) {
+        locationService.updateOrderLocationCache(form);
+        return ResponseCodeMap.ok();
+    }
 
 
 }

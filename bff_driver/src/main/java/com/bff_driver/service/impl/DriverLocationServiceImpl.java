@@ -3,6 +3,7 @@ package com.bff_driver.service.impl;
 import com.bff_driver.controller.form.ClearNewOrderQueueForm;
 import com.bff_driver.controller.form.RemoveLocationCacheForm;
 import com.bff_driver.controller.form.UpdateLocationCacheForm;
+import com.bff_driver.controller.form.UpdateOrderLocationCacheForm;
 import com.bff_driver.feign.MapServiceAPI;
 import com.bff_driver.feign.MessageNotifyAPI;
 import com.bff_driver.service.DriverLocationService;
@@ -26,6 +27,12 @@ public class DriverLocationServiceImpl implements DriverLocationService {
     @Override
     public void removeLocationCache(RemoveLocationCacheForm form) {
         mapServiceAPI.removeLocationCache(form);
+    }
+
+
+    @Override
+    public void updateOrderLocationCache(UpdateOrderLocationCacheForm form) {
+        mapServiceAPI.updateOrderLocationCache(form);
     }
 
 

@@ -36,10 +36,12 @@ public class MapServiceImpl implements MapService {
         req.form("to", endPlaceLatitude + "," + endPlaceLongitude);
         req.form("key", key);
         HttpResponse resp = req.execute();
+
         JSONObject json = JSONUtil.parseObj(resp.body());
+
         int status = json.getInt("status");
         String message = json.getStr("message");
-        System.out.println(message);
+//        System.out.println(message);
         if (status != 0) {
             log.error(message);
             throw new DriveMateException("预估里程异常：" + message);

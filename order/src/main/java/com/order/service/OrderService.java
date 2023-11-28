@@ -20,5 +20,17 @@ public interface OrderService {
 
     public String deleteUnAcceptOrder(Map param);
 
+    public HashMap searchDriverCurrentOrder(long driverId);
 
+    public HashMap hasCustomerCurrentOrder(long customerId);
+
+    public HashMap searchOrderForMoveById(Map param);
+
+    public int arriveStartPlace(Map param);
+
+    public boolean confirmArriveStartPlace(long orderId);
+
+    public int startDriving(Map param);
+
+    public int updateOrderStatus(Map param);
 }

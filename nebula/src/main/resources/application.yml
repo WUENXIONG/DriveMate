@@ -14,17 +14,14 @@ spring:
     name: nebula
   cloud:
     inetutils:
-      #??????Nacos??IP??
       preferred-networks: 101.33.247.199
     nacos:
-      #??????Web??????????
       config:
         group: DEFAULT_GROUP
         file-extension: yaml
         server-addr: 101.33.247.199:8848
         prefix: ${spring.application.name}
         namespace: drivemate
-      #??????Nacos??????
       discovery:
         namespace: drivemate
         username: nacos

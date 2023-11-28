@@ -2,8 +2,7 @@ package com.bff_driver.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import com.bff_driver.controller.form.AcceptNewOrderForm;
-import com.bff_driver.controller.form.SearchDriverExecuteOrderForm;
+import com.bff_driver.controller.form.*;
 import com.bff_driver.service.OrderService;
 import com.common.util.ResponseCodeMap;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +42,55 @@ public class OrderController {
         form.setDriverId(driverId);
         HashMap map = orderService.searchDriverExecuteOrder(form);
         return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/searchDriverCurrentOrder")
+    @SaCheckLogin
+    @Operation(summary = "查询司机当前订单")
+    public ResponseCodeMap searchDriverCurrentOrder() {
+        long driverId = StpUtil.getLoginIdAsLong();
+        SearchDriverCurrentOrderForm form = new SearchDriverCurrentOrderForm();
+        form.setDriverId(driverId);
+        HashMap map = orderService.searchDriverCurrentOrder(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/searchOrderForMoveById")
+    @SaCheckLogin
+    @Operation(summary = "查询订单信息用于司乘同显功能")
+    public ResponseCodeMap searchOrderForMoveById(@RequestBody @Valid SearchOrderForMoveByIdForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        HashMap map = orderService.searchOrderForMoveById(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/arriveStartPlace")
+    @Operation(summary = "司机到达上车点")
+    @SaCheckLogin
+    public ResponseCodeMap arriveStartPlace(@RequestBody @Valid ArriveStartPlaceForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        int rows = orderService.arriveStartPlace(form);
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+    @PostMapping("/startDriving")
+    @Operation(summary = "开始代驾")
+    @SaCheckLogin
+    public ResponseCodeMap startDriving(@RequestBody @Valid StartDrivingForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        int rows = orderService.startDriving(form);
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+    @PostMapping("/updateOrderStatus")
+    @SaCheckLogin
+    @Operation(summary = "更新订单状态")
+    public ResponseCodeMap updateOrderStatus(@RequestBody @Valid UpdateOrderStatusForm form) {
+        int rows = orderService.updateOrderStatus(form);
+        return ResponseCodeMap.ok().put("rows", rows);
     }
 
 

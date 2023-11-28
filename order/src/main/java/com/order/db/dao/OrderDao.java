@@ -22,6 +22,15 @@ public interface OrderDao {
 
     public int deleteUnAcceptOrder(Map param);
 
+    public HashMap searchDriverCurrentOrder(long driverId);
+
+    public Long hasCustomerUnFinishedOrder(long customerId);
+
+    public HashMap hasCustomerUnAcceptOrder(long customerId);
+
+    public HashMap searchOrderForMoveById(Map param);
+
+    public int updateOrderStatus(Map param);
 
 }
 

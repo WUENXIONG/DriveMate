@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
     public Integer searchOrderStatus(Map param) {
         Integer status = orderDao.searchOrderStatus(param);
         if (status == null) {
-            throw new DriveMateException("没有查询到数据，请核对查询条件");
+            status = 0;
         }
         return status;
     }
@@ -141,10 +141,90 @@ public class OrderServiceImpl implements OrderService {
         if (rows != 1) {
             return "订单取消失败";
         }
+
+        rows = orderBillDao.deleteUnAcceptOrderBill(orderId);
+        if(rows != 1){
+            return "账单取消失败";
+        }
+
         return "订单取消成功";
     }
 
+    @Override
+    public HashMap searchDriverCurrentOrder(long driverId) {
+        HashMap map = orderDao.searchDriverCurrentOrder(driverId);
+        return map;
+    }
 
+    @Override
+    public HashMap hasCustomerCurrentOrder(long customerId) {
+        HashMap result = new HashMap();
+        HashMap map = orderDao.hasCustomerUnAcceptOrder(customerId);
+        result.put("hasCustomerUnAcceptOrder", map != null);
+        result.put("unAcceptOrder", map);
+        Long id = orderDao.hasCustomerUnFinishedOrder(customerId);
+        result.put("hasCustomerUnFinishedOrder", id != null);
+        result.put("unFinishedOrder", id);
+        return result;
+    }
+
+    @Override
+    public HashMap searchOrderForMoveById(Map param) {
+        HashMap map = orderDao.searchOrderForMoveById(param);
+        return map;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int arriveStartPlace(Map param) {
+        //添加到达上车点标志位
+        long orderId = MapUtil.getLong(param, "orderId");
+        redisTemplate.opsForValue().set("order_driver_arrivied#" + orderId, "1");
+        int rows = orderDao.updateOrderStatus(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新订单状态失败");
+        }
+        return rows;
+    }
+
+    @Override
+    public boolean confirmArriveStartPlace(long orderId) {
+        String key = "order_driver_arrivied#" + orderId;
+        if (redisTemplate.hasKey(key) && redisTemplate.opsForValue().get(key).toString().endsWith("1")) {
+            redisTemplate.opsForValue().set(key, "2");
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int startDriving(Map param) {
+        long orderId = MapUtil.getLong(param, "orderId");
+        String key = "order_driver_arrivied#" + orderId;
+        if (redisTemplate.hasKey(key) && redisTemplate.opsForValue().get(key).toString().endsWith("2")) {
+            redisTemplate.delete(key);
+            int rows = orderDao.updateOrderStatus(param);
+            if (rows != 1) {
+                throw new DriveMateException("更新订单状态失败");
+            }
+            return rows;
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int updateOrderStatus(Map param) {
+        int rows = orderDao.updateOrderStatus(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新取消订单记录失败");
+        }
+        return rows;
+    }
 
 }
 

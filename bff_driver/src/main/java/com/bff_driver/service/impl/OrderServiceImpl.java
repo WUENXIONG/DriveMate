@@ -1,9 +1,7 @@
 package com.bff_driver.service.impl;
 
 import cn.hutool.core.map.MapUtil;
-import com.bff_driver.controller.form.AcceptNewOrderForm;
-import com.bff_driver.controller.form.SearchCustomerInfoInOrderForm;
-import com.bff_driver.controller.form.SearchDriverExecuteOrderForm;
+import com.bff_driver.controller.form.*;
 import com.bff_driver.feign.CustomerServiceAPI;
 import com.bff_driver.feign.OrderServiceAPI;
 import com.bff_driver.service.OrderService;
@@ -50,6 +48,66 @@ public class OrderServiceImpl implements OrderService {
         map.putAll(orderMap);
         map.putAll(cstMap);
         return map;
+    }
+
+    @Override
+    public HashMap searchDriverCurrentOrder(SearchDriverCurrentOrderForm form) {
+        ResponseCodeMap r = orderServiceAPI.searchDriverCurrentOrder(form);
+        HashMap orderMap = (HashMap) r.get("result");
+
+        if (MapUtil.isNotEmpty(orderMap)) {
+            HashMap map = new HashMap();
+            //查询代驾客户信息
+            long customerId = MapUtil.getLong(orderMap, "customerId");
+            SearchCustomerInfoInOrderForm infoInOrderForm = new SearchCustomerInfoInOrderForm();
+            infoInOrderForm.setCustomerId(customerId);
+            r = customerServiceAPI.searchCustomerInfoInOrder(infoInOrderForm);
+            HashMap cstMap = (HashMap) r.get("result");
+            map.putAll(orderMap);
+            map.putAll(cstMap);
+            return map;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public HashMap searchOrderForMoveById(SearchOrderForMoveByIdForm form) {
+        ResponseCodeMap r = orderServiceAPI.searchOrderForMoveById(form);
+        HashMap map = (HashMap) r.get("result");
+        return map;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int arriveStartPlace(ArriveStartPlaceForm form) {
+        ResponseCodeMap r = orderServiceAPI.arriveStartPlace(form);
+        int rows = MapUtil.getInt(r, "rows");
+        if (rows == 1) {
+            //TODO 发送通知消息
+        }
+        return rows;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int startDriving(StartDrivingForm form) {
+        ResponseCodeMap r = orderServiceAPI.startDriving(form);
+        int rows = MapUtil.getInt(r, "rows");
+        //TODO 发送通知消息
+        return rows;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int updateOrderStatus(UpdateOrderStatusForm form) {
+        ResponseCodeMap r = orderServiceAPI.updateOrderStatus(form);
+        int rows = MapUtil.getInt(r, "rows");
+        //TODO 判断订单的状态，然后实现后续业务
+        return rows;
     }
 
 

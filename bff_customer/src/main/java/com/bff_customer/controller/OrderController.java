@@ -2,9 +2,7 @@ package com.bff_customer.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import com.bff_customer.controller.form.CreateNewOrderForm;
-import com.bff_customer.controller.form.SearchOrderStatusForm;
-import com.bff_customer.controller.form.DeleteUnAcceptOrderForm;
+import com.bff_customer.controller.form.*;
 import com.bff_customer.service.OrderService;
 import com.common.util.ResponseCodeMap;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +53,36 @@ public class OrderController {
         String result = orderService.deleteUnAcceptOrder(form);
         return ResponseCodeMap.ok().put("result", result);
     }
+
+    @PostMapping("/searchOrderForMoveById")
+    @SaCheckLogin
+    @Operation(summary = "查询订单信息用于司乘同显功能")
+    public ResponseCodeMap searchOrderForMoveById(@RequestBody @Valid SearchOrderForMoveByIdForm form) {
+        long customerId = StpUtil.getLoginIdAsLong();
+        form.setCustomerId(customerId);
+        HashMap map = orderService.searchOrderForMoveById(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/hasCustomerCurrentOrder")
+    @SaCheckLogin
+    @Operation(summary = "查询乘客是否存在当前的订单")
+    public ResponseCodeMap hasCustomerCurrentOrder() {
+        long customerId = StpUtil.getLoginIdAsLong();
+        HasCustomerCurrentOrderForm form=new HasCustomerCurrentOrderForm();
+        form.setCustomerId(customerId);
+        HashMap map = orderService.hasCustomerCurrentOrder(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/confirmArriveStartPlace")
+    @SaCheckLogin
+    @Operation(summary = "确定司机已经到达")
+    public ResponseCodeMap confirmArriveStartPlace(@RequestBody @Valid ConfirmArriveStartPlaceForm form) {
+        boolean result = orderService.confirmArriveStartPlace(form);
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
 
 }
 

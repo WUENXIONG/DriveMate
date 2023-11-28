@@ -53,19 +53,13 @@ spring:
       max-request-size: 20MB
 
 sa-token:
-
   token-name: token
-
-  timeout: 864000
-
+#  timeout: 864000
+  timeout: -1
   activity-timeout: -1
-
   allow-concurrent-login: true
-
   is-share: false
-
   token-style: uuid
-
   isReadCookie: false
 
 springdoc:
