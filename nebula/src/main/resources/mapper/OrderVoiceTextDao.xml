@@ -6,7 +6,24 @@
 
     <insert id="insert" parameterType="com.nebula.db.pojo.OrderVoiceTextEntity">
         UPSERT INTO drivemate.order_voice_text("id", "uuid", "order_id", "record_file", "text", "create_time")
-    VALUES(NEXT VALUE FOR drivemate.ovt_sequence, '${uuid}', #{orderId}, '${recordFile}', '${text}', NOW())
+        VALUES(NEXT VALUE FOR drivemate.ovt_sequence, '${uuid}', #{orderId}, '${recordFile}', '${text}', NOW())
     </insert>
+
+    <select id="searchIdByUuid" parameterType="String" resultType="Long">
+        SELECT "id" FROM drivemate.order_voice_text WHERE "uuid" = '${uuid}'
+    </select>
+
+
+    <update id="updateCheckResult" parameterType="Map">
+        UPSERT INTO drivemate.order_voice_text("id","label","suggestion","keywords")
+        VALUES(#{id},'${label}','${suggestion}',
+        <if test="keywords!=null">
+            '${keywords}'
+        </if>
+        <if test="keywords==null">
+            NULL
+        </if>
+        )
+    </update>
 
 </mapper>

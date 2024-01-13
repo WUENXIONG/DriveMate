@@ -1,6 +1,6 @@
 package com.mis.service;
 
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.pojo.RoleEntity;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public interface RoleService {
 
     public HashMap searchById(int id);
 
-    public DataPagingDef searchRoleByPage(HashMap param);
+    public DataPaging searchRoleByPage(HashMap param);
 
     public int insert(RoleEntity role);
 

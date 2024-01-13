@@ -3,7 +3,7 @@ package com.mis.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.mis.controller.form.*;
 import com.mis.db.pojo.DeptEntity;
@@ -50,7 +50,7 @@ public class DeptController {
         int start = (page - 1) * length;
         Map param = BeanUtil.beanToMap(form);
         param.put("start", start);
-        DataPagingDef pageDef = deptService.searchDeptByPage(param);
+        DataPaging pageDef = deptService.searchDeptByPage(param);
         return ResponseCodeMap.ok().put("page", pageDef);
     }
 

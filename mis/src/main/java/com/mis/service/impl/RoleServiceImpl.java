@@ -1,7 +1,7 @@
 package com.mis.service.impl;
 
 import com.common.exception.DriveMateException;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.dao.RoleDao;
 import com.mis.db.pojo.RoleEntity;
 import com.mis.service.RoleService;
@@ -33,12 +33,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public DataPagingDef searchRoleByPage(HashMap param) {
+    public DataPaging searchRoleByPage(HashMap param) {
         ArrayList<HashMap> list = roleDao.searchRoleByPage(param);
         long count = roleDao.searchRoleCount(param);
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        DataPagingDef pageDef = new DataPagingDef(list, count, start, length);
+        DataPaging pageDef = new DataPaging(list, count, start, length);
         return pageDef;
     }
 

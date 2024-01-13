@@ -1,8 +1,10 @@
 package com.order.service;
 
+import com.common.util.DataPaging;
 import com.order.db.pojo.OrderBillEntity;
 import com.order.db.pojo.OrderEntity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,4 +35,15 @@ public interface OrderService {
     public int startDriving(Map param);
 
     public int updateOrderStatus(Map param);
+
+    public DataPaging searchOrderByPage(Map param);
+
+    public HashMap searchOrderContent(long orderId);
+
+    public ArrayList<HashMap> searchOrderStartLocationIn30Days();
+
+    public boolean validDriverOwnOrder(Map param);
+
+    public HashMap searchSettlementNeedData(long orderId);
+
 }

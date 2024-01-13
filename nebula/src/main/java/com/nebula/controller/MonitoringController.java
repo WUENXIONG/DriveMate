@@ -2,17 +2,16 @@ package com.nebula.controller;
 
 import com.common.exception.DriveMateException;
 import com.common.util.ResponseCodeMap;
+import com.nebula.controller.form.InsertOrderMonitoringForm;
 import com.nebula.service.MonitoringService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/monitoring")
@@ -31,5 +30,14 @@ public class MonitoringController {
         monitoringService.monitoring(file, name, text);
         return ResponseCodeMap.ok();
     }
+
+    @PostMapping(value = "/insertOrderMonitoring")
+    @Operation(summary = "添加订单监控摘要记录")
+    public ResponseCodeMap insertOrderMonitoring(@RequestBody @Valid InsertOrderMonitoringForm form) {
+        int rows = monitoringService.insertOrderMonitoring(form.getOrderId());
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+
 }
 

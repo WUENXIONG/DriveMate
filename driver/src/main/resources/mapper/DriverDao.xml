@@ -203,4 +203,13 @@
         WHERE id = #{driverId}
     </update>
 
+    <select id="searchDriverBriefInfo" parameterType="long" resultType="HashMap">
+        SELECT CAST(id AS CHAR) AS id,
+        `name`,
+        tel
+        FROM tb_driver
+        WHERE id = #{driverId}
+    </select>
+
+
 </mapper>

@@ -1,7 +1,7 @@
 package com.driver.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.driver.controller.form.*;
 import com.driver.service.DriverService;
@@ -66,8 +66,8 @@ public class DriverController {
         int length = form.getLength();
         int start = (page - 1) * length;
         param.put("start", start);
-        DataPagingDef dataPagingDef = driverService.searchDriverByPage(param);
-        return ResponseCodeMap.ok().put("result", dataPagingDef);
+        DataPaging dataPaging = driverService.searchDriverByPage(param);
+        return ResponseCodeMap.ok().put("result", dataPaging);
     }
 
     @PostMapping("/searchDriverAuth")
@@ -91,5 +91,13 @@ public class DriverController {
         int rows = driverService.updateDriverRealAuth(param);
         return ResponseCodeMap.ok().put("rows", rows);
     }
+
+    @PostMapping("/searchDriverBriefInfo")
+    @Operation(summary = "查询司机简明信息")
+    public ResponseCodeMap searchDriverBriefInfo(@RequestBody @Valid SearchDriverBriefInfoForm form) {
+        HashMap map = driverService.searchDriverBriefInfo(form.getDriverId());
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
 
 }

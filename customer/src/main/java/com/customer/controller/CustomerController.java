@@ -4,11 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import com.common.util.ResponseCodeMap;
 import com.customer.controller.form.LoginForm;
 import com.customer.controller.form.RegisterNewCustomerForm;
+import com.customer.controller.form.SearchCustomerBriefInfoForm;
 import com.customer.controller.form.SearchCustomerInfoInOrderForm;
 import com.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -43,6 +47,14 @@ public class CustomerController {
         HashMap map = customerService.searchCustomerInfoInOrder(form.getCustomerId());
         return ResponseCodeMap.ok().put("result", map);
     }
+
+    @PostMapping("/searchCustomerBriefInfo")
+    @Operation(summary = "查询客户简明信息")
+    public ResponseCodeMap searchCustomerBriefInfo(@RequestBody @Valid SearchCustomerBriefInfoForm form) {
+        HashMap map = customerService.searchCustomerBriefInfo(form.getCustomerId());
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
 
 }
 

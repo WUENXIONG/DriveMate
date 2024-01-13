@@ -1,6 +1,7 @@
 package com.mis.feign;
 
 import com.common.util.ResponseCodeMap;
+import com.mis.controller.form.SearchDriverBriefInfoForm;
 import com.mis.controller.form.SearchDriverByPageForm;
 import com.mis.controller.form.SearchDriverRealSummaryForm;
 import com.mis.controller.form.UpdateDriverRealAuthForm;
@@ -18,6 +19,10 @@ public interface DriverServiceAPI {
 
     @PostMapping("/driver/updateDriverRealAuth")
     public ResponseCodeMap updateDriverRealAuth(UpdateDriverRealAuthForm form);
+
+    @PostMapping("/driver/searchDriverBriefInfo")
+    public ResponseCodeMap searchDriverBriefInfo(SearchDriverBriefInfoForm form);
+
 
 }
 

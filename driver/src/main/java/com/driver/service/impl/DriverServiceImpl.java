@@ -6,7 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.common.exception.DriveMateException;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.MicroAppUtil;
 import com.driver.db.dao.DriverDao;
 import com.driver.db.dao.DriverSettingsDao;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,7 +168,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DataPagingDef searchDriverByPage(Map param) {
+    public DataPaging searchDriverByPage(Map param) {
         long count = driverDao.searchDriverCount(param);
         ArrayList<HashMap> list = null;
         if (count == 0) {
@@ -181,8 +180,8 @@ public class DriverServiceImpl implements DriverService {
         int length = (Integer) param.get("length");
 
 
-        DataPagingDef dataPagingDef = new DataPagingDef(list, count, start, length);
-        return dataPagingDef;
+        DataPaging dataPaging = new DataPaging(list, count, start, length);
+        return dataPaging;
 
     }
 
@@ -205,5 +204,12 @@ public class DriverServiceImpl implements DriverService {
         int rows = driverDao.updateDriverRealAuth(param);
         return rows;
     }
+
+    @Override
+    public HashMap searchDriverBriefInfo(long driverId) {
+        HashMap map = driverDao.searchDriverBriefInfo(driverId);
+        return map;
+    }
+
 
 }

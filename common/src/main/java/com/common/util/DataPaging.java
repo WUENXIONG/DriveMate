@@ -3,12 +3,10 @@ package com.common.util;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Data
-public class DataPagingDef implements Serializable {
+public class DataPaging implements Serializable {
     private static final long serialVersionUID = 1l;
 
 
@@ -26,7 +24,7 @@ public class DataPagingDef implements Serializable {
 
     private List list;
 
-    public DataPagingDef(List list, long totalRecordCount, int pageIndex, int pageSize){
+    public DataPaging(List list, long totalRecordCount, int pageIndex, int pageSize){
         this.list = list;
         this.totalRecordCount = totalRecordCount;
         this.pageSize = pageSize;

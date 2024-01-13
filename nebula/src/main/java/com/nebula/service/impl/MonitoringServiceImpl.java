@@ -2,9 +2,11 @@ package com.nebula.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.common.exception.DriveMateException;
+import com.nebula.db.dao.OrderMonitoringDao;
 import com.nebula.db.dao.OrderVoiceTextDao;
 import com.nebula.db.pojo.OrderVoiceTextEntity;
 import com.nebula.service.MonitoringService;
+import com.nebula.task.VoiceTextCheckTask;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,7 @@ import javax.annotation.Resource;
 @Service
 @Slf4j
 public class MonitoringServiceImpl implements MonitoringService {
-    @Resource
-    private OrderVoiceTextDao orderVoiceTextDao;
+
 
     @Value("${minio.endpoint}")
     private String endpoint;
@@ -29,6 +30,16 @@ public class MonitoringServiceImpl implements MonitoringService {
 
     @Value("${minio.secret-key}")
     private String secretKey;
+
+    @Resource
+    private OrderVoiceTextDao orderVoiceTextDao;
+
+    @Resource
+    private OrderMonitoringDao orderMonitoringDao;
+
+    @Resource
+    private VoiceTextCheckTask voiceTextCheckTask;
+
 
     @Override
     @Transactional
@@ -64,7 +75,21 @@ public class MonitoringServiceImpl implements MonitoringService {
         }
 
         //TODO 执行文稿内容审查
+        voiceTextCheckTask.checkText(orderId, text, uuid);
 
     }
+
+    @Override
+    @Transactional
+    public int insertOrderMonitoring(long orderId) {
+        int rows = orderMonitoringDao.insert(orderId);
+        if (rows != 1) {
+            throw new DriveMateException("添加订单监控摘要记录失败");
+        }
+        return rows;
+    }
+
+
+
 }
 

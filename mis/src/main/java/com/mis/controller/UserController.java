@@ -8,7 +8,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.mis.controller.form.*;
 import com.mis.db.pojo.UserEntity;
@@ -112,7 +112,7 @@ public class UserController {
         int start = (page - 1) * length;
         Map param = BeanUtil.beanToMap(form);
         param.put("start", start);
-        DataPagingDef pageDef = userService.searchUserByPage(param);
+        DataPaging pageDef = userService.searchUserByPage(param);
         return ResponseCodeMap.ok().put("page", pageDef);
     }
 

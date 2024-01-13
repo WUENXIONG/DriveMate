@@ -28,8 +28,8 @@ public class DriverController {
     @SaCheckPermission(value = {"ROOT", "DRIVER:SELECT"}, mode = SaMode.OR)
     @Operation(summary = "查询司机分页记录")
     public ResponseCodeMap searchDriverByPage(@RequestBody @Valid SearchDriverByPageForm form) {
-        DataPagingDef dataPagingDef = driverService.searchDriverByPage(form);
-        return ResponseCodeMap.ok().put("result", dataPagingDef);
+        DataPaging dataPaging = driverService.searchDriverByPage(form);
+        return ResponseCodeMap.ok().put("result", dataPaging);
     }
 
     @PostMapping("/searchDriverComprehensiveData")

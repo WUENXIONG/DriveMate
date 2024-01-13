@@ -1,7 +1,6 @@
 package com.driver.service;
 
-import com.common.util.DataPagingDef;
-import com.esotericsoftware.reflectasm.PublicConstructorAccess;
+import com.common.util.DataPaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +16,14 @@ public interface DriverService {
 
     public HashMap searchDriverBaseInfo(long driverId);
 
-    public DataPagingDef searchDriverByPage(Map param);
+    public DataPaging searchDriverByPage(Map param);
 
     public HashMap searchDriverAuth(long driverId);
 
     public HashMap searchDriverRealSummary(long driverId);
 
     public int updateDriverRealAuth(Map param);
+
+    public HashMap searchDriverBriefInfo(long driverId);
 
 }

@@ -1,6 +1,6 @@
 package com.mis.service;
 
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.pojo.UserEntity;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public interface UserService {
 
     public int updatePassword(Map param);
 
-    public DataPagingDef searchUserByPage(Map param);
+    public DataPaging searchUserByPage(Map param);
 
     public int insert(UserEntity user);
 

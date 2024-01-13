@@ -2,6 +2,7 @@ package com.order.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONObject;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.order.controller.form.*;
 import com.order.db.pojo.OrderBillEntity;
@@ -9,12 +10,15 @@ import com.order.db.pojo.OrderEntity;
 import com.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,6 +159,48 @@ public class OrderController {
         Map param = BeanUtil.beanToMap(form);
         int rows = orderService.updateOrderStatus(param);
         return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+    @PostMapping("/searchOrderByPage")
+    @Operation(summary = "查询订单分页记录")
+    public ResponseCodeMap searchOrderByPage(@RequestBody @Valid SearchOrderByPageForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        int page = form.getPage();
+        int length = form.getLength();
+        int start = (page - 1) * length;
+        param.put("start", start);
+        DataPaging dataPaging = orderService.searchOrderByPage(param);
+        return ResponseCodeMap.ok().put("result", dataPaging);
+    }
+
+    @PostMapping("/searchOrderContent")
+    @Operation(summary = "查询订单详情")
+    public ResponseCodeMap searchOrderContent(@RequestBody @Valid SearchOrderContentForm form) {
+        Map map = orderService.searchOrderContent(form.getOrderId());
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+
+    @PostMapping("/searchOrderStartLocationIn30Days")
+    @Operation(summary = "查询30天以内订单上车点定位")
+    public ResponseCodeMap searchOrderStartLocationIn30Days() {
+        ArrayList<HashMap> result = orderService.searchOrderStartLocationIn30Days();
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
+    @PostMapping("/validDriverOwnOrder")
+    @Operation(summary = "查询司机是否关联某订单")
+    public ResponseCodeMap validDriverOwnOrder(@RequestBody @Valid ValidDriverOwnOrderForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        boolean bool = orderService.validDriverOwnOrder(param);
+        return ResponseCodeMap.ok().put("result", bool);
+    }
+
+    @PostMapping("/searchSettlementNeedData")
+    @Operation(summary = "查询订单的开始和等时")
+    public ResponseCodeMap searchSettlementNeedData(@RequestBody @Valid SearchSettlementNeedDataForm form) {
+        HashMap map = orderService.searchSettlementNeedData(form.getOrderId());
+        return ResponseCodeMap.ok().put("result", map);
     }
 
 

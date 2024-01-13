@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.mis.controller.form.*;
 import com.mis.db.pojo.RoleEntity;
@@ -49,7 +49,7 @@ public class RoleController {
         int start = (page - 1) * length;
         HashMap param = JSONUtil.parse(form).toBean(HashMap.class);
         param.put("start", start);
-        DataPagingDef pageDef = roleService.searchRoleByPage(param);
+        DataPaging pageDef = roleService.searchRoleByPage(param);
         return ResponseCodeMap.ok().put("page", pageDef);
     }
 

@@ -1,8 +1,11 @@
 package com.order.service.impl;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.common.exception.DriveMateException;
+import com.common.util.DataPaging;
 import com.order.db.dao.OrderBillDao;
 import com.order.db.dao.OrderDao;
 import com.order.db.pojo.OrderBillEntity;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -225,6 +229,65 @@ public class OrderServiceImpl implements OrderService {
         }
         return rows;
     }
+
+    @Override
+    public DataPaging searchOrderByPage(Map param) {
+        long count = orderDao.searchOrderCount(param);
+        ArrayList<HashMap> list = null;
+        if (count == 0) {
+            list = new ArrayList<>();
+        } else {
+            list = orderDao.searchOrderByPage(param);
+        }
+        int start = (Integer) param.get("start");
+        int length = (Integer) param.get("length");
+        DataPaging dataPaging = new DataPaging(list, count, start, length);
+        return dataPaging;
+    }
+
+    @Override
+    public HashMap searchOrderContent(long orderId) {
+        HashMap map = orderDao.searchOrderContent(orderId);
+        JSONObject startPlaceLocation = JSONUtil.parseObj(MapUtil.getStr(map, "startPlaceLocation"));
+        JSONObject endPlaceLocation = JSONUtil.parseObj(MapUtil.getStr(map, "endPlaceLocation"));
+
+        map.replace("startPlaceLocation", startPlaceLocation);
+        map.replace("endPlaceLocation", endPlaceLocation);
+        return map;
+    }
+
+    @Override
+    public ArrayList<HashMap> searchOrderStartLocationIn30Days() {
+        ArrayList<String> list = orderDao.searchOrderStartLocationIn30Days();
+        ArrayList<HashMap> result = new ArrayList<>();
+        list.forEach(location -> {
+            JSONObject json = JSONUtil.parseObj(location);
+            String latitude = json.getStr("latitude");
+            String longitude = json.getStr("longitude");
+            latitude = latitude.substring(0, latitude.length() - 4);
+            latitude += "0001";
+            longitude = longitude.substring(0, longitude.length() - 4);
+            longitude += "0001";
+            HashMap map = new HashMap();
+            map.put("latitude", latitude);
+            map.put("longitude", longitude);
+            result.add(map);
+        });
+        return result;
+    }
+
+    @Override
+    public boolean validDriverOwnOrder(Map param) {
+        long count = orderDao.validDriverOwnOrder(param);
+        return count == 1;
+    }
+
+    @Override
+    public HashMap searchSettlementNeedData(long orderId) {
+        HashMap map = orderDao.searchSettlementNeedData(orderId);
+        return map;
+    }
+
 
 }
 

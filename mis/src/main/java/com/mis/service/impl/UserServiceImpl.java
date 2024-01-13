@@ -1,13 +1,9 @@
 package com.mis.service.impl;
 
-import cn.hutool.core.img.ImgUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.extra.qrcode.QrCodeUtil;
-import cn.hutool.extra.qrcode.QrConfig;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.dao.UserDao;
 import com.mis.db.pojo.UserEntity;
 import com.mis.service.UserService;
@@ -20,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -117,12 +112,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DataPagingDef searchUserByPage(Map param) {
+    public DataPaging searchUserByPage(Map param) {
         ArrayList<HashMap> list = userDao.searchUserByPage(param);
         long count = userDao.searchUserCount(param);
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        DataPagingDef pageDef = new DataPagingDef(list, count, start, length);
+        DataPaging pageDef = new DataPaging(list, count, start, length);
         return pageDef;
     }
 

@@ -1,7 +1,7 @@
 package com.mis.service.impl;
 
 import com.common.exception.DriveMateException;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.dao.DeptDao;
 import com.mis.db.pojo.DeptEntity;
 import com.mis.service.DeptService;
@@ -30,12 +30,12 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public DataPagingDef searchDeptByPage(Map param) {
+    public DataPaging searchDeptByPage(Map param) {
         ArrayList<HashMap> list = deptDao.searchDeptByPage(param);
         long count = deptDao.searchDeptCount(param);
         int start = (Integer) param.get("start");
         int length = (Integer) param.get("length");
-        DataPagingDef pageDef = new DataPagingDef(list, count, start, length);
+        DataPaging pageDef = new DataPaging(list, count, start, length);
 
         return pageDef;
     }

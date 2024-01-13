@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.common.util.CosUtil;
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.common.util.ResponseCodeMap;
 import com.mis.controller.form.SearchDriverByPageForm;
 import com.mis.controller.form.SearchDriverRealSummaryForm;
@@ -27,11 +27,11 @@ public class DriverServiceImpl implements DriverService{
 
 
     @Override
-    public DataPagingDef searchDriverByPage(SearchDriverByPageForm form) {
+    public DataPaging searchDriverByPage(SearchDriverByPageForm form) {
         ResponseCodeMap r = driverServiceAPI.searchDriverByPage(form);
         HashMap map = (HashMap) r.get("result");
-        DataPagingDef dataPagingDef = BeanUtil.toBean(map, DataPagingDef.class);
-        return dataPagingDef;
+        DataPaging dataPaging = BeanUtil.toBean(map, DataPaging.class);
+        return dataPaging;
     }
 
     @Override

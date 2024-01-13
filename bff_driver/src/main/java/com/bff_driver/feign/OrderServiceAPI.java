@@ -32,6 +32,9 @@ public interface OrderServiceAPI {
     @PostMapping("/order/updateOrderStatus")
     public ResponseCodeMap updateOrderStatus(UpdateOrderStatusForm form);
 
+    @PostMapping("/order/validDriverOwnOrder")
+    public ResponseCodeMap validDriverOwnOrder(ValidDriverOwnOrderForm form);
+
 
 }
 

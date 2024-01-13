@@ -3,6 +3,7 @@ package com.bff_driver.service.impl;
 import cn.hutool.core.map.MapUtil;
 import com.bff_driver.controller.form.*;
 import com.bff_driver.feign.CustomerServiceAPI;
+import com.bff_driver.feign.NebulaServiceAPI;
 import com.bff_driver.feign.OrderServiceAPI;
 import com.bff_driver.service.OrderService;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
@@ -21,6 +22,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Resource
     private CustomerServiceAPI customerServiceAPI;
+
+    @Resource
+    private NebulaServiceAPI nebulaServiceAPI;
 
     @Override
     @LcnTransaction
@@ -96,7 +100,14 @@ public class OrderServiceImpl implements OrderService {
     public int startDriving(StartDrivingForm form) {
         ResponseCodeMap r = orderServiceAPI.startDriving(form);
         int rows = MapUtil.getInt(r, "rows");
-        //TODO 发送通知消息
+
+        if(rows == 1){
+            InsertOrderMonitoringForm monitoringForm = new InsertOrderMonitoringForm();
+            monitoringForm.setOrderId(form.getOrderId());
+            nebulaServiceAPI.insertOrderMonitoring(monitoringForm);
+            //TODO 发送通知消息
+        }
+
         return rows;
     }
 

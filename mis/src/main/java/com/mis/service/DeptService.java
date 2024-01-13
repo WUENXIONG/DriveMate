@@ -1,6 +1,6 @@
 package com.mis.service;
 
-import com.common.util.DataPagingDef;
+import com.common.util.DataPaging;
 import com.mis.db.pojo.DeptEntity;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Map;
 public interface DeptService {
     public ArrayList<HashMap> searchAllDept();
 
-    public DataPagingDef searchDeptByPage(Map param);
+    public DataPaging searchDeptByPage(Map param);
 
     public HashMap searchById(int id);
 
