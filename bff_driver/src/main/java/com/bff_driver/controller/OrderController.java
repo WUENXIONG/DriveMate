@@ -93,6 +93,46 @@ public class OrderController {
         return ResponseCodeMap.ok().put("rows", rows);
     }
 
+    @PostMapping("/updateBillFee")
+    @SaCheckLogin
+    @Operation(summary = "更新订单账单费用")
+    public ResponseCodeMap updateBillFee(@RequestBody @Valid UpdateBillFeeForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        int rows = orderService.updateOrderBill(form);
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+
+    @PostMapping("/searchReviewDriverOrderBill")
+    @SaCheckLogin
+    @Operation(summary = "查询司机预览订单")
+    public ResponseCodeMap searchReviewDriverOrderBill(@RequestBody @Valid SearchReviewDriverOrderBillForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        HashMap map = orderService.searchReviewDriverOrderBill(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/searchOrderStatus")
+    @SaCheckLogin
+    @Operation(summary = "查询订单状态")
+    public ResponseCodeMap searchOrderStatus(@RequestBody @Valid SearchOrderStatusForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        form.setDriverId(driverId);
+        Integer status = orderService.searchOrderStatus(form);
+        return ResponseCodeMap.ok().put("result", status);
+    }
+
+    @PostMapping("/updateOrderAboutPayment")
+    @SaCheckLogin
+    @Operation(summary = "更新订单相关的付款信息")
+    public ResponseCodeMap updateOrderAboutPayment(@RequestBody @Valid UpdateOrderAboutPaymentForm form) {
+        long driverId = StpUtil.getLoginIdAsLong();
+        String result = orderService.updateOrderAboutPayment(driverId, form);
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
 
 }
 

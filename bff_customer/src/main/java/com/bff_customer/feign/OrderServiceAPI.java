@@ -25,5 +25,27 @@ public interface OrderServiceAPI {
     @PostMapping("/order/confirmArriveStartPlace")
     public ResponseCodeMap confirmArriveStartPlace(ConfirmArriveStartPlaceForm form);
 
+    @PostMapping("/order/searchOrderById")
+    public ResponseCodeMap searchOrderById(SearchOrderByIdForm form);
+
+
+    @PostMapping("/order/validCanPayOrder")
+    public ResponseCodeMap validCanPayOrder(ValidCanPayOrderForm form);
+
+    @PostMapping("/bill/updateBillPayment")
+    public ResponseCodeMap updateBillPayment(UpdateBillPaymentForm form);
+
+    @PostMapping("/order/updateOrderPrepayId")
+    public ResponseCodeMap updateOrderPrepayId(UpdateOrderPrepayIdForm form);
+
+
+    @PostMapping("/order/receiveMessage")
+    public ResponseCodeMap receiveMessage(receiveMessageForm form);
+
+    @PostMapping("/order/updateOrderAboutPayment")
+    public ResponseCodeMap updateOrderAboutPayment(UpdateOrderAboutPaymentForm form);
+
+
+
 
 }

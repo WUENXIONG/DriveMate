@@ -1,6 +1,7 @@
 package com.bff_driver.feign;
 
 import com.bff_driver.config.MultipartSupportConfig;
+import com.bff_driver.controller.form.CalculateOrderMileageForm;
 import com.bff_driver.controller.form.InsertOrderGpsForm;
 import com.bff_driver.controller.form.InsertOrderMonitoringForm;
 import com.common.util.ResponseCodeMap;
@@ -24,6 +25,9 @@ public interface NebulaServiceAPI {
 
     @PostMapping("/order/gps/insertOrderGps")
     public ResponseCodeMap insertOrderGps(InsertOrderGpsForm form);
+
+    @PostMapping("/order/gps/calculateOrderMileage")
+    public ResponseCodeMap calculateOrderMileage(CalculateOrderMileageForm form);
 
 
 }

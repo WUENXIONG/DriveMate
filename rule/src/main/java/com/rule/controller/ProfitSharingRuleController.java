@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping({"/profitSharing"})
+@RequestMapping({"/profitsharing"})
 @Tag(name = "ProfitSharingRuleController", description = "分账规则Web接口")
 public class ProfitSharingRuleController{
     public static final String msg = "Chinese";
@@ -31,7 +31,7 @@ public class ProfitSharingRuleController{
         return ResponseCodeMap.ok().put("result", this.profitSharingRuleService.searchProfitsharingRuleById(searchProfitsharingRuleByIdForm.getRuleId()));
     }
 
-    @PostMapping({"/calculateProfitSharing"})
+    @PostMapping({"/calculateProfitsharing"})
     @Operation(summary = "计算分账规则")
     public ResponseCodeMap calculateProfitSharing(@RequestBody @Valid CalculateProfitSharingForm calculateProfitsharingForm) {
         return ResponseCodeMap.ok().put("result", this.profitSharingRuleService.calculateProfitsharing(calculateProfitsharingForm.getOrderId(), calculateProfitsharingForm.getAmount(), "Chinese"));

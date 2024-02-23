@@ -83,6 +83,35 @@ public class OrderController {
         return ResponseCodeMap.ok().put("result", result);
     }
 
+    @PostMapping("/searchOrderById")
+    @SaCheckLogin
+    @Operation(summary = "根据ID查询订单信息")
+    public ResponseCodeMap searchOrderById(@RequestBody @Valid SearchOrderByIdForm form) {
+        long customerId = StpUtil.getLoginIdAsLong();
+        form.setCustomerId(customerId);
+        HashMap map = orderService.searchOrderById(form);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/createWxPayment")
+    @Operation(summary = "创建支付订单")
+    @SaCheckLogin
+    public ResponseCodeMap createWxPayment(@RequestBody @Valid CreateWxPaymentForm form) {
+        Long customerId = StpUtil.getLoginIdAsLong();
+        form.setCustomerId(customerId);
+        HashMap map = orderService.createWxPayment(form.getOrderId(), form.getCustomerId(), form.getVoucherId());
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    // 这个方法逻辑上说不通，不该使用
+    @PostMapping("/updateOrderAboutPayment")
+    @Operation(summary = "更新订单相关的付款信息")
+    @SaCheckLogin
+    public ResponseCodeMap updateOrderAboutPayment(@RequestBody @Valid UpdateOrderAboutPaymentForm form) {
+        String result = orderService.updateOrderAboutPayment(form);
+        return ResponseCodeMap.ok().put("result", result);
+    }
+
 
 }
 

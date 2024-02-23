@@ -1,16 +1,25 @@
 package com.order.service.impl;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.common.exception.DriveMateException;
 import com.common.util.DataPaging;
+import com.order.controller.form.TransferForm;
 import com.order.db.dao.OrderBillDao;
 import com.order.db.dao.OrderDao;
 import com.order.db.pojo.OrderBillEntity;
 import com.order.db.pojo.OrderEntity;
+import com.order.feign.DriverServiceAPI;
+import com.order.quarz.QuartzUtil;
+import com.order.quarz.job.HandleProfitsharingJob;
 import com.order.service.OrderService;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +46,11 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    private DriverServiceAPI driverServiceAPI;
+
+    @Resource
+    private QuartzUtil quartzUtil;
 
 
     @Override
@@ -147,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         rows = orderBillDao.deleteUnAcceptOrderBill(orderId);
-        if(rows != 1){
+        if (rows != 1) {
             return "账单取消失败";
         }
 
@@ -288,6 +304,167 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
+    @Override
+    public HashMap searchOrderById(Map param) {
+        HashMap map = orderDao.searchOrderById(param);
+        String startPlaceLocation = MapUtil.getStr(map, "startPlaceLocation");
+        String endPlaceLocation = MapUtil.getStr(map, "endPlaceLocation");
+        map.replace("startPlaceLocation", JSONUtil.parseObj(startPlaceLocation));
+        map.replace("endPlaceLocation", JSONUtil.parseObj(endPlaceLocation));
+        return map;
+    }
+
+
+    @Override
+    public HashMap validCanPayOrder(Map param) {
+        HashMap map = orderDao.validCanPayOrder(param);
+        if (map == null || map.size() == 0) {
+            throw new DriveMateException("订单无法支付");
+        }
+        return map;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int updateOrderPrepayId(Map param) {
+        int rows = orderDao.updateOrderPrepayId(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新预支付订单ID失败");
+        }
+        return rows;
+    }
+
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public void handlePayment(String uuid, String payId, String payTime) {
+        /*
+         * 更新订单状态之前，先查询订单的状态。
+         * 因为乘客端付款成功之后，会主动发起Ajax请求，要求更新订单状态。
+         * 所以后端接收到付款通知消息之后，不要着急修改订单状态，先看一下订单是否已经是7状态
+         */
+        HashMap map = orderDao.searchOrderIdAndStatus(uuid);
+        int status = MapUtil.getInt(map, "status");
+        if (status == 7) {
+            return;
+        }
+
+        HashMap param = new HashMap() {{
+            put("uuid", uuid);
+            put("payId", payId);
+            put("payTime", payTime);
+        }};
+        //更新订单记录的PayId、状态和付款时间
+        int rows = orderDao.updateOrderPayIdAndStatus(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新支付订单ID失败");
+        }
+
+        //查询系统奖励
+        map = orderDao.searchDriverIdAndIncentiveFee(uuid);
+        String incentiveFee = MapUtil.getStr(map, "incentiveFee");
+        long driverId = MapUtil.getLong(map, "driverId");
+        //判断系统奖励费是否大于0
+        if (new BigDecimal(incentiveFee).compareTo(new BigDecimal("0.00")) == 1) {
+            TransferForm form = new TransferForm();
+            form.setUuid(IdUtil.simpleUUID());
+            form.setAmount(incentiveFee);
+            form.setDriverId(driverId);
+            form.setType((byte) 2);
+            form.setRemark("系统奖励费");
+            //给司机钱包转账奖励费
+            driverServiceAPI.transfer(form);
+        }
+
+        //先判断是否有分账定时器
+        if (quartzUtil.checkExists(uuid, "代驾单分账任务组") || quartzUtil.checkExists(uuid, "查询代驾单分账任务组")) {
+            //存在分账定时器就不需要再执行分账
+            return;
+        }
+
+        //TODO 执行分账
+        JobDetail jobDetail = JobBuilder.newJob(HandleProfitsharingJob.class).build();
+        Map dataMap = jobDetail.getJobDataMap();
+        dataMap.put("uuid", uuid);
+        dataMap.put("payId", payId);
+
+        //2分钟之后执行分账定时器
+        Date executeDate = new DateTime().offset(DateField.MINUTE, 2);
+        quartzUtil.addJob(jobDetail, uuid, "代驾单分账任务组", executeDate);
+
+        //更新订单状态为已完成状态（8）
+        rows = orderDao.finishOrder(uuid);
+        if (rows != 1) {
+            throw new DriveMateException("更新订单结束状态失败");
+        }
+
+    }
+
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public String updateOrderAboutPayment(Map param) {
+        //para需要带payId
+        long orderId = MapUtil.getLong(param, "orderId");
+        /*
+         * 查询订单状态。
+         * 因为有可能Web方法先收到了付款结果通知消息，把订单状态改成了7、8状态，
+         * 所以要先查询订单状态。
+         */
+
+        HashMap map = orderDao.searchUuidAndStatus(orderId);
+        String uuid = MapUtil.getStr(map, "uuid");
+        int status = MapUtil.getInt(map, "status");
+        //如果订单状态已经是已付款，就退出当前方法
+        if (status == 7 || status == 8) {
+            return "付款成功";
+        }
+
+        int rows = orderDao.updateOrderAboutPayment(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新订单相关付款信息失败");
+        }
+
+        map = orderDao.searchDriverIdAndIncentiveFee(uuid);
+        String incentiveFee = MapUtil.getStr(map, "incentiveFee");
+        long driverId = MapUtil.getLong(map, "driverId");
+
+        if (new BigDecimal(incentiveFee).compareTo(new BigDecimal("0.00")) == 1) {
+            TransferForm form = new TransferForm();
+            form.setUuid(IdUtil.simpleUUID());
+            form.setAmount(incentiveFee);
+            form.setDriverId(driverId);
+            form.setType((byte) 2);
+            form.setRemark("系统奖励费");
+            //给司机钱包转账奖励费
+            driverServiceAPI.transfer(form);
+        }
+
+        if (quartzUtil.checkExists(uuid, "代驾单分账任务组") || quartzUtil.checkExists(uuid, "查询代驾单分账任务组")) {
+            //存在分账定时器就不需要再执行分账
+            return "付款成功";
+        }
+
+        //执行分账
+        JobDetail jobDetail = JobBuilder.newJob(HandleProfitsharingJob.class).build();
+        Map dataMap = jobDetail.getJobDataMap();
+        dataMap.put("uuid", uuid);
+//        dataMap.put("payId", param.get("payId"));
+
+        Date executeDate = new DateTime().offset(DateField.MINUTE, 2);
+        quartzUtil.addJob(jobDetail, uuid, "代驾单分账任务组", executeDate);
+        rows = orderDao.finishOrder(uuid);
+
+        if(rows!=1){
+            throw new DriveMateException("更新订单结束状态失败");
+        }
+
+        return "付款成功";
+
+    }
 
 }
 

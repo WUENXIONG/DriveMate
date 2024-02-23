@@ -46,4 +46,14 @@ public interface OrderService {
 
     public HashMap searchSettlementNeedData(long orderId);
 
+    public HashMap searchOrderById(Map param);
+
+    public HashMap validCanPayOrder(Map param);
+
+    public int updateOrderPrepayId(Map param);
+
+    public void handlePayment(String uuid, String payId, String payTime);
+
+    public String updateOrderAboutPayment(Map param);
+
 }

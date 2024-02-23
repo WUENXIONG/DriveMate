@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/order")
@@ -201,6 +200,55 @@ public class OrderController {
     public ResponseCodeMap searchSettlementNeedData(@RequestBody @Valid SearchSettlementNeedDataForm form) {
         HashMap map = orderService.searchSettlementNeedData(form.getOrderId());
         return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/searchOrderById")
+    @Operation(summary = "根据ID查询订单信息")
+    public ResponseCodeMap searchOrderById(@RequestBody @Valid SearchOrderByIdForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        HashMap map = orderService.searchOrderById(param);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/validCanPayOrder")
+    @Operation(summary = "检查订单是否可以支付")
+    public ResponseCodeMap validCanPayOrder(@RequestBody @Valid ValidCanPayOrderForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        HashMap map = orderService.validCanPayOrder(param);
+        return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/updateOrderPrepayId")
+    @Operation(summary = "更新预支付订单ID")
+    public ResponseCodeMap updateOrderPrepayId(@RequestBody @Valid UpdateOrderPrepayIdForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        int rows = orderService.updateOrderPrepayId(param);
+        return ResponseCodeMap.ok().put("rows", rows);
+    }
+
+    @RequestMapping("/receiveMessage")
+    @Operation(summary = "接收代驾费消息通知")
+    public void receiveMessage(@RequestBody @Valid receiveMessageForm form) throws Exception {
+
+
+            String uuid = form.getUuId();
+            long time = System.currentTimeMillis();
+            int random = (int)(Math.random() * Integer.MAX_VALUE);
+            String payId = new UUID(time, random) + "";;
+            Long currTime = System.currentTimeMillis();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String payTime = format.format(currTime);
+
+            //TODO 修改订单状态、执行分账、发放系统奖励
+            orderService.handlePayment(uuid, payId, payTime);
+    }
+
+    @PostMapping("/updateOrderAboutPayment")
+    @Operation(summary = "查询司机是否关联某订单")
+    public ResponseCodeMap updateOrderAboutPayment(@RequestBody @Valid UpdateOrderAboutPaymentForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        String result = orderService.updateOrderAboutPayment(param);
+        return ResponseCodeMap.ok().put("result", result);
     }
 
 

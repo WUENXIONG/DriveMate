@@ -23,5 +23,8 @@ public interface CustomerServiceAPI {
     @PostMapping("/customer/car/deleteCustomerCarById")
     public ResponseCodeMap deleteCustomerCarById(DeleteCustomerCarByIdForm form);
 
+    @PostMapping("/customer/searchCustomerOpenId")
+    public ResponseCodeMap searchCustomerOpenId(SearchCustomerOpenIdForm form);
+
 
 }

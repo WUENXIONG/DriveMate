@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -60,6 +61,24 @@ public class OrderBillServiceImpl implements OrderBillService {
         }
         return rows;
     }
+
+    @Override
+    public HashMap searchReviewDriverOrderBill(Map param) {
+        HashMap map = orderBillDao.searchReviewDriverOrderBill(param);
+        return map;
+    }
+
+    @Override
+    @Transactional
+    @LcnTransaction
+    public int updateBillPayment(Map param) {
+        int rows = orderBillDao.updateBillPayment(param);
+        if (rows != 1) {
+            throw new DriveMateException("更新账单实际支付费用失败");
+        }
+        return rows;
+    }
+
 
 
 }

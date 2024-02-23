@@ -35,6 +35,22 @@ public interface OrderServiceAPI {
     @PostMapping("/order/validDriverOwnOrder")
     public ResponseCodeMap validDriverOwnOrder(ValidDriverOwnOrderForm form);
 
+    @PostMapping("/order/searchSettlementNeedData")
+    public ResponseCodeMap searchSettlementNeedData(SearchSettlementNeedDataForm form);
+
+    @PostMapping("/bill/updateBillFee")
+    public ResponseCodeMap updateBillFee(UpdateBillFeeForm form);
+
+    @PostMapping("/bill/searchReviewDriverOrderBill")
+    public ResponseCodeMap searchReviewDriverOrderBill(SearchReviewDriverOrderBillForm form);
+
+
+    @PostMapping("/order/searchOrderStatus")
+    public ResponseCodeMap searchOrderStatus(SearchOrderStatusForm form);
+
+    @PostMapping("/order/updateOrderAboutPayment")
+    public ResponseCodeMap updateOrderAboutPayment(UpdateOrderAboutPaymentForm form);
+
 
 }
 

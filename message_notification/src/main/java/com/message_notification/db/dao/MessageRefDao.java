@@ -3,16 +3,17 @@ package com.message_notification.db.dao;
 import com.message_notification.db.pojo.MessageRefEntity;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
+
 @Repository
 public class MessageRefDao {
-    @Autowired
+    @Resource
     private MongoTemplate mongoTemplate;
 
     public String insert(MessageRefEntity entity) {

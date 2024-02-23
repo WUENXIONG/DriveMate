@@ -2,10 +2,7 @@ package com.customer.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.common.util.ResponseCodeMap;
-import com.customer.controller.form.LoginForm;
-import com.customer.controller.form.RegisterNewCustomerForm;
-import com.customer.controller.form.SearchCustomerBriefInfoForm;
-import com.customer.controller.form.SearchCustomerInfoInOrderForm;
+import com.customer.controller.form.*;
 import com.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,6 +50,13 @@ public class CustomerController {
     public ResponseCodeMap searchCustomerBriefInfo(@RequestBody @Valid SearchCustomerBriefInfoForm form) {
         HashMap map = customerService.searchCustomerBriefInfo(form.getCustomerId());
         return ResponseCodeMap.ok().put("result", map);
+    }
+
+    @PostMapping("/searchCustomerOpenId")
+    @Operation(summary = "查询客户的OpenId")
+    public ResponseCodeMap searchCustomerOpenId(@RequestBody @Valid SearchCustomerOpenIdForm form) {
+        String openId = customerService.searchCustomerOpenId(form.getCustomerId());
+        return ResponseCodeMap.ok().put("result", openId);
     }
 
 
